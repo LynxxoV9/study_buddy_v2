@@ -8,6 +8,19 @@ Chatbot tuteur pédagogique évolué avec gestion du streaming SSE, sélection d
 
 ---
 
+## Démonstration et Captures d'écran
+
+### 1. Interface utilisateur (Chat, Streaming, Sélecteur de modèle et Rôle Note)
+![Interface Study Buddy v2](assets/discu.png)
+
+### 2. Démarrage et fonctionnement du Backend FastAPI
+![Terminal Backend FastAPI](assets/back.png)
+
+### 3. Démarrage du Frontend Vite
+![Terminal Frontend Vite](assets/frontend.png)
+
+---
+
 ## 1. Architecture et fonctionnalités
 
 ### 1.1 Rôle Custom : `note` (Note personnelle de révision)
