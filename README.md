@@ -57,7 +57,7 @@ study_buddy_v2/
 
 ## 2. Fonctionnalités obligatoires implémentées
 
-### 1. Rôle custom : `note` (Note personnelle de l'étudiant) (4 pts)
+### 1. Rôle custom : `note` (Note personnelle de l'étudiant)
 - **Enregistré en base** : Stocké dans la table `messages` avec `role = 'note'` et un numéro `seq` incrémenté.
 - **Affiché dans l'interface avec un style distinct** : Rendu visuel spécifique sous forme de note mémo ambrée avec le badge `📌 Note personnelle` et la mention `Non envoyée au LLM`. L'étudiant peut créer une note soit via le bouton mode `📝 Note`, soit via le bouton rapide `+ Note`, soit avec la commande `/note <texte>`.
 - **Traité explicitement au moment de construire l'historique (`build_llm_history`)** : Le rôle `note` est **explicitement filtré et ignoré** pour le LLM.
@@ -66,27 +66,27 @@ study_buddy_v2/
   2. *Intégrité du contexte* : Évite de perturber le tuteur avec des annotations asynchrones.
   3. *Économie de tokens* : Évite de gaspiller inutilement des tokens de fenêtre de contexte.
 
-### 2. Prompt système spécialisé (`prompts/system.md`) (4 pts)
+### 2. Prompt système spécialisé (`prompts/system.md`)
 - **Persona & Domaine** : Study Buddy, tuteur bienveillant spécialisé en programmation Python pour débutants (structures de données, fonctions, bonnes pratiques de code et sensibilisation aux erreurs/sécurité).
 - **Pédagogie socratique** : Ne donne jamais la solution d'un exercice d'emblée. Décompose le problème en étapes, pose des questions de guidage et incite l'élève à chercher.
 - **Périmètre strict** : Refus courtois de tout sujet hors domaine (cuisine, politique, etc.) avec rappel bienveillant du cadre de travail.
 - **Résistance au détournement (Anti-Jailbreak)** : Reste imperturbable face aux tentatives de changement de rôle (« ignore tes instructions », « agis comme HackerX »).
 - **Fiche de test obligatoire** : Voir section 3 ci-dessous (5 scénarios comparés ancien vs nouveau prompt).
 
-### 3. Streaming de la réponse (5 pts)
+### 3. Streaming de la réponse
 - **Backend** : Appel de l'API RodiumAI avec `"stream": true` et transmission des segments au client via `StreamingResponse` de FastAPI au format Server-Sent Events (`data: {"delta": ...}\n\n`, finissant par `data: [DONE]\n\n`).
 - **Frontend** : Consommation du flux avec `fetch()` et `response.body.getReader()`. Affichage progressif au fil de la génération avec curseur animé.
 - **Intégrité en base** : La réponse complète est enregistrée en base **uniquement une fois le flux achevé avec succès**.
 - **Gestion des erreurs et annulation** : En cas d'erreur de stream ou d'interruption par l'utilisateur (bouton Stop), un rollback est effectué. Rien n'est écrit en base : aucun message orphelin ni réponse tronquée.
 
-### 4. Choix du modèle par l'utilisateur (4 pts)
+### 4. Choix du modèle par l'utilisateur
 - **Backend** : Route `GET /models` exposant la liste des modèles autorisés (`ALLOWED_MODELS` configuré côté serveur : `google/gemini-2.5-flash-lite`, `google/gemini-3.8-flash`, `anthropic/claude-sonnet-4-5-20250929`).
 - **Frontend** : Sélecteur déroulant permettant à l'utilisateur de choisir le modèle pour chaque échange.
 - **Sécurité** : Le backend vérifie systématiquement le modèle demandé et rejette immédiatement toute valeur non autorisée avec un code **HTTP 400 Bad Request**.
 
 ### 5. Bonus implémentés
 - **Bouton Stop pendant le streaming** : Annule la requête en cours et garantit l'absence d'écriture corrompue en base (+1).
-- **Mécanisme de ré-essai (Retry)** : Bouton « 🔄 Réessayer » pour re-soumettre la dernière requête en cas d'erreur réseau (+1).
+- **Mécanisme de ré-essai (Retry)** : Bouton «Réessayer » pour re-soumettre la dernière requête en cas d'erreur réseau (+1).
 - **Affichage des tokens consommés** : Badge `🪙 X tokens` calculé à partir du champ `usage` de l'API (+1).
 
 ---
